@@ -33,9 +33,11 @@ st.caption("Big Data Technology · Belgian rail mobility and OpenStreetMap")
 st.markdown(
     """
     <div class="contract">
-      Upload the result of an end-to-end mobility pipeline. The evaluator checks the
-      output contract, lineage, reconciliation, data quality, idempotency and
-      OpenStreetMap enrichment. It does not execute student code or assign an official grade.
+        Upload the result of an end-to-end mobility pipeline. The evaluator checks the
+        output contract, declared sources, output-count consistency, data quality,
+        duplicate control, timestamp and coordinate validity, OpenStreetMap enrichment
+        and run metadata. It does not execute student code or assess architecture,
+        scalability or implementation quality, and it does not assign an official grade.
     </div>
     """,
     unsafe_allow_html=True,
@@ -75,7 +77,7 @@ with right:
             st.stop()
 
         first, second, third = st.columns(3)
-        first.metric("Score", f"{result['score']}/{result['maximum']}")
+        first.metric("Validation score", f"{result['score']}/{result['maximum']}")
         second.metric("Rows evaluated", result["rows"])
         third.metric("Checks passed", f"{result['checks_passed']}/{result['checks_total']}")
 
@@ -103,6 +105,6 @@ with right:
 
 st.divider()
 st.markdown(
-    '<p class="small-note">Formative prototype · no submission data is persisted by the application.</p>',
+    '<p class="small-note">Formative output validator · no submission data is persisted by the application.</p>',
     unsafe_allow_html=True,
 )

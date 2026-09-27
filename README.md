@@ -5,7 +5,7 @@ Working prototype for a three-session Big Data Technology lab built around Belgi
 ## What this repository contains
 
 - `app.py`: Streamlit upload and feedback interface.
-- `evaluator.py`: deterministic ZIP validation and scoring.
+- `evaluator.py`: deterministic ZIP validation and formative feedback.
 - `reference_pipeline.py`: small reference implementation that ingests schedule, real-time and OSM fixtures.
 - `self_test.py`: builds the reference submission and runs it through exactly the same evaluator used by Streamlit.
 - `sample_inputs/`: small GTFS-compatible and OSM-compatible fixtures for development.
@@ -57,6 +57,8 @@ data.
 ## Current status
 
 This is an executable proof of concept. The source fixtures and output contract are intentionally small and provisional. Before student use, they must be replaced by a frozen subset of the selected NMBS/SNCB, Infrabel and OpenStreetMap sources, and the final rubric must be agreed with the course lecturer.
+
+The evaluator validates declared output artifacts and selected data invariants. It does not execute student code or independently assess architecture, scalability, implementation quality, source authenticity, replay-based idempotency or full reproducibility.
 
 ## Proposed real source strategy
 

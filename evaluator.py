@@ -138,10 +138,10 @@ def evaluate_submission(archive_bytes: bytes) -> dict[str, Any]:
     source_status = "pass" if has_gtfs and has_osm else "warning" if has_gtfs or has_osm else "fail"
     checks.append(
         _check(
-            "Source lineage",
+            "Source declarations",
             5,
             source_status,
-            f"GTFS/NMBS source: {'yes' if has_gtfs else 'no'}; OpenStreetMap source: {'yes' if has_osm else 'no'}.",
+            f"GTFS/NMBS source declared: {'yes' if has_gtfs else 'no'}; OpenStreetMap source declared: {'yes' if has_osm else 'no'}.",
         )
     )
 
@@ -174,7 +174,7 @@ def evaluate_submission(archive_bytes: bytes) -> dict[str, Any]:
     counts_match = manifest_rows == len(output) and quality_rows == len(output)
     checks.append(
         _check(
-            "Row-count reconciliation",
+            "Output-count consistency",
             10,
             "pass" if counts_match else "fail",
             f"CSV={len(output)}, manifest={manifest_rows}, quality report={quality_rows}.",
@@ -188,12 +188,12 @@ def evaluate_submission(archive_bytes: bytes) -> dict[str, Any]:
         duplicate_keys = len(output)
     event_duplicates = int(output["event_id"].duplicated().sum()) if "event_id" in output.columns else len(output)
     reported_duplicates = quality.get("duplicate_output_record_count")
-    idempotent = duplicate_keys == 0 and event_duplicates == 0 and reported_duplicates == 0
+    unique_output = duplicate_keys == 0 and event_duplicates == 0 and reported_duplicates == 0
     checks.append(
         _check(
-            "Uniqueness and idempotency",
+            "Uniqueness and duplicate control",
             10,
-            "pass" if idempotent else "fail",
+            "pass" if unique_output else "fail",
             f"Composite-key duplicates={duplicate_keys}; event_id duplicates={event_duplicates}; reported output duplicates={reported_duplicates}.",
         )
     )
@@ -247,14 +247,14 @@ def evaluate_submission(archive_bytes: bytes) -> dict[str, Any]:
     generated_at_valid = not pd.isna(pd.to_datetime(manifest.get("generated_at"), errors="coerce", utc=True))
     tool_present = bool(str(manifest.get("pipeline_tool", "")).strip())
     run_id_present = bool(str(manifest.get("run_id", "")).strip())
-    reproducible = generated_at_valid and tool_present and run_id_present
+    run_metadata_complete = generated_at_valid and tool_present and run_id_present
     checks.append(
         _check(
-            "Reproducibility metadata",
+            "Run metadata completeness",
             10,
-            "pass" if reproducible else "fail",
+            "pass" if run_metadata_complete else "fail",
             "Run identifier, pipeline tool and generation timestamp are present and valid."
-            if reproducible
+            if run_metadata_complete
             else "Run identifier, tool or valid generation timestamp is missing.",
         )
     )
